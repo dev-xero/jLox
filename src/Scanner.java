@@ -13,24 +13,19 @@ public class Scanner {
         this.source = source;
     }
 
-    /* HELPERS */
-    // Returns the next character in source
     private char advance() {
         return source.charAt(current++);
     }
 
-    // Calls the main add token function with the token type
     private void addToken(TokenType type) {
         addToken(type, null);
     }
 
-    // Overloaded method adds the token along with metadata to the arraylist
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line));
     }
 
-    // Checks that the current index pointer hasn't exceeded the source length
     private boolean isAtEnd() {
         return current >= source.length();
     }
@@ -43,23 +38,30 @@ public class Scanner {
         return true;
     }
 
-    // Returns the current character
     private char peak() {
         if (isAtEnd()) return '\0';
         return source.charAt(current);
     }
 
-    // Returns the next character in source
     private char peakNext() {
         if (current + 1 >= source.length()) return '\0';
         return source.charAt(current + 1);
     }
 
     private boolean isDigit(char c) {
-        return c >= '0' || c <= '9';
+        return '0' <= c && c <= '9';
     }
 
-    // Handles tokenizing string sequences
+    private boolean isAlpha(char c) {
+        return ('a' <= c && c <= 'z') ||
+                ('A' <= c && c <= 'Z') ||
+                (c == '_');
+    }
+
+    private boolean isAlphanumeric(char c) {
+        return isAlpha(c) || isDigit(c);
+    }
+
     private void string() {
         while (peak() != '"' && !isAtEnd()) {
             if (peak() == '\n') line++;
@@ -74,7 +76,6 @@ public class Scanner {
         addToken(TokenType.STRING, value);
     }
 
-    // Handles number tokenization
     private void number() {
         while (isDigit(peak())) advance();
         if (peak() == '.' && isDigit(peakNext())) {
@@ -84,9 +85,12 @@ public class Scanner {
         addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
-    /* HELPERS END */
+    private void identifier() {
+        while(isAlphanumeric(peak())) advance();
 
-    // Scans and tokenizes the source
+        addToken(TokenType.IDENTIFIER);
+    }
+
     private void scanToken() {
         char c = advance();
         switch (c) {
@@ -117,6 +121,8 @@ public class Scanner {
             default -> {
                 if (isDigit(c)){
                     number();
+                } else if (isAlpha(c)) {
+                    identifier();
                 } else {
                     Lox.error(line, "Unexpected character encountered.");
                 }
@@ -124,7 +130,6 @@ public class Scanner {
         }
     }
 
-    // Returns a list of tokens scanned from source
     List<Token> scanTokens() {
         while (!isAtEnd()) {
             scanToken();
