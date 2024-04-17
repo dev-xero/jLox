@@ -49,6 +49,16 @@ public class Scanner {
         return source.charAt(current);
     }
 
+    // Returns the next character in source
+    private char peakNext() {
+        if (current + 1 >= source.length()) return '\0';
+        return source.charAt(current + 1);
+    }
+
+    private boolean isDigit(char c) {
+        return c >= '0' || c <= '9';
+    }
+
     // Handles tokenizing string sequences
     private void string() {
         while (peak() != '"' && !isAtEnd()) {
@@ -60,8 +70,18 @@ public class Scanner {
 
         advance(); // Closing double quotes
 
-        String value = source.substring(start+1, current-1);
+        String value = source.substring(start + 1, current - 1);
         addToken(TokenType.STRING, value);
+    }
+
+    // Handles number tokenization
+    private void number() {
+        while (isDigit(peak())) advance();
+        if (peak() == '.' && isDigit(peakNext())) {
+            while(isDigit(peak())) advance();
+        }
+
+        addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
     /* HELPERS END */
@@ -94,7 +114,13 @@ public class Scanner {
             case ' ', '\r', '\t' -> {}
             case '\n' -> line++;
             case '"' -> string();
-            default -> Lox.error(line, "Unexpected character encountered.");
+            default -> {
+                if (isDigit(c)){
+                    number();
+                } else {
+                    Lox.error(line, "Unexpected character encountered.");
+                }
+            }
         }
     }
 
