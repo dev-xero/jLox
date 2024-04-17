@@ -8,6 +8,23 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Lox {
+    static boolean hadError = false;
+
+    /*
+    * Interface for reporting errors through the scanner or parser
+    * */
+    static void error(int line, String message) {
+        report(line, "", message);
+    }
+
+    /*
+    * Handle basic error reporting
+    * */
+    private static void report(int line, String where, String message) {
+       System.out.println("[line " + line + "] Error " + where + ": " + message);
+       hadError = true;
+    }
+
     private static void run(String source) {
 //        Scanner scanner = new Scanner(source);
 //        List<Token> tokens = scanner.scanTokens();
@@ -17,11 +34,18 @@ public class Lox {
 //        }
     }
 
+    /*
+    * Runs a file containing valid Lox code, scans and parses line by line
+    * */
     private static void runFile(String filePath) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(filePath));
         run(new String(bytes, Charset.defaultCharset()));
     }
 
+    /*
+    * Handles running Lox in the interactive mode
+    * Reads commands and executes them line by line
+    * */
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
@@ -34,6 +58,13 @@ public class Lox {
         }
     }
 
+    /*
+    * Program entry point
+    * Lox can be run in two modes:
+    *  - Interactive and
+    *  - File mode
+    * Depending on the command line arguments
+    * */
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
