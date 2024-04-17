@@ -14,6 +14,7 @@ public class Scanner {
     }
 
     /* HELPERS */
+    // Returns the next character in source
     private char advance() {
         return source.charAt(current++);
     }
@@ -42,9 +43,25 @@ public class Scanner {
         return true;
     }
 
+    // Returns the current character
     private char peak() {
         if (isAtEnd()) return '\0';
         return source.charAt(current);
+    }
+
+    // Handles tokenizing string sequences
+    private void string() {
+        while (peak() != '"' && !isAtEnd()) {
+            if (peak() == '\n') line++;
+            advance();
+        }
+
+        if (isAtEnd()) Lox.error(line, "Unterminated string.");
+
+        advance(); // Closing double quotes
+
+        String value = source.substring(start+1, current-1);
+        addToken(TokenType.STRING, value);
     }
 
     /* HELPERS END */
@@ -76,6 +93,7 @@ public class Scanner {
             }
             case ' ', '\r', '\t' -> {}
             case '\n' -> line++;
+            case '"' -> string();
             default -> Lox.error(line, "Unexpected character encountered.");
         }
     }
