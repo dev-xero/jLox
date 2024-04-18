@@ -1,3 +1,5 @@
+package lox;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +36,7 @@ public class Lox {
     }
 
     /*
-    * Runs a file containing valid Lox code, scans and parses line by line
+    * Runs a file containing valid lox.Lox code, scans and parses line by line
     * */
     private static void runFile(String filePath) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(filePath));
@@ -43,7 +45,7 @@ public class Lox {
     }
 
     /*
-    * Handles running Lox in the interactive mode
+    * Handles running lox.Lox in the interactive mode
     * Reads commands and executes them line by line
     * */
     private static void runPrompt() throws IOException {
@@ -61,7 +63,7 @@ public class Lox {
 
     /*
     * Program entry point
-    * Lox can be run in two modes:
+    * lox.Lox can be run in two modes:
     *  - Interactive and
     *  - File mode
     * Depending on the command line arguments

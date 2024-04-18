@@ -1,5 +1,7 @@
+package lox;
+
 /**
- * Token class
+ * lox.Token class
  * contains information on the token including its type, lexeme and literal
  */
 public class Token {

@@ -1,3 +1,3 @@
 # jLox
 
-Java implementation of Lox: A high-level, dynamically typed, interpreted programming language.
+Java implementation of lox.Lox: A high-level, dynamically typed, interpreted programming language.
