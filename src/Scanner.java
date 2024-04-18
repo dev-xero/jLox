@@ -100,7 +100,9 @@ public class Scanner {
 
     private void number() {
         while (isDigit(peak())) advance();
+
         if (peak() == '.' && isDigit(peakNext())) {
+            advance();
             while(isDigit(peak())) advance();
         }
 
@@ -157,6 +159,7 @@ public class Scanner {
 
     List<Token> scanTokens() {
         while (!isAtEnd()) {
+            start = current;
             scanToken();
         }
 
